@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Review — Netter Pipeline{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Review Cleaned Data</h1>
+    <a href="/export" class="btn btn-primary">Export to Tableau</a>
+</div>
+
+<div class="stats-row">
+    <div class="stat-card">
+        <span class="stat-value" id="totalRecords">—</span>
+        <span class="stat-label">Total Records</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-value" id="matchRate">—</span>
+        <span class="stat-label">Match Rate</span>
+    </div>
+    <div class="stat-card stat-card-warning">
+        <span class="stat-value" id="flaggedRows">—</span>
+        <span class="stat-label">Flagged Rows</span>
+    </div>
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Student ID</th>
+            <th>Program</th>
+            <th>School</th>
+            <th>Date</th>
+            <th>Present</th>
+            <th>CitiSpan Compliant</th>
+            <th>Matched</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="empty-state">
+            <td colspan="7">No data to review. <a href="/upload">Upload a file first.</a></td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}

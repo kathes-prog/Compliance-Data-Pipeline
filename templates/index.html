@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Run History — Netter Pipeline{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Run History</h1>
+    <a href="/upload" class="btn btn-primary">New Upload</a>
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Files Ingested</th>
+            <th>Records Processed</th>
+            <th>Flagged</th>
+            <th>Export</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="empty-state">
+            <td colspan="5">No pipeline runs yet. <a href="/upload">Upload a file to get started.</a></td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}
