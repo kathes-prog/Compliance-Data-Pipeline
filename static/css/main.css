@@ -157,6 +157,60 @@ main {
     letter-spacing: 0.04em;
 }
 
+/* Validation result box */
+.validation-box {
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    max-width: 860px;
+}
+
+.validation-box h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.validation-box h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+}
+
+.validation-box ul {
+    padding-left: 1.25rem;
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.validation-box--error {
+    background: #fff5f5;
+    border: 1px solid #fca5a5;
+    color: #7f1d1d;
+}
+
+.validation-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #fca5a5;
+}
+
+.error-table {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.error-table code {
+    background: #fee2e2;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: monospace;
+    font-size: 0.82rem;
+}
+
 /* Upload form */
 .upload-form {
     background: #fff;

@@ -50,5 +50,15 @@ def init_db():
                 records_flagged   INTEGER,
                 export_path       TEXT
             );
+
+            CREATE TABLE IF NOT EXISTS uploads (
+                id           INTEGER PRIMARY KEY,
+                program_id   INTEGER REFERENCES programs(id),
+                filename     TEXT,
+                date_range   TEXT,
+                total_rows   INTEGER,
+                status       TEXT DEFAULT 'pending',  -- pending | valid | invalid
+                uploaded_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
         """)
     conn.close()

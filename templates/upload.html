@@ -6,6 +6,74 @@
     <h1>Upload Attendance Data</h1>
 </div>
 
+{# ── Parse errors (file couldn't be read at all) ── #}
+{% if parse_errors %}
+<div class="validation-box validation-box--error">
+    <h2>File could not be read</h2>
+    <ul>
+        {% for err in parse_errors %}
+        <li>{{ err }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{# ── Validation errors (file parsed but rows failed checks) ── #}
+{% if val_result and not val_result.valid %}
+<div class="validation-box validation-box--error">
+    <h2>Validation failed — {{ val_result.error_count }} issue{{ 's' if val_result.error_count != 1 }}</h2>
+
+    {% if val_result.column_errors %}
+    <div class="validation-section">
+        <h3>Column errors</h3>
+        <ul>
+            {% for err in val_result.column_errors %}
+            <li>{{ err }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if val_result.warnings %}
+    <div class="validation-section">
+        <h3>Warnings</h3>
+        <ul>
+            {% for w in val_result.warnings %}
+            <li>{{ w }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if val_result.row_errors %}
+    <div class="validation-section">
+        <h3>Row-level errors ({{ val_result.row_errors | length }})</h3>
+        <table class="data-table error-table">
+            <thead>
+                <tr>
+                    <th>Row</th>
+                    <th>Column</th>
+                    <th>Value</th>
+                    <th>Issue</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in val_result.row_errors %}
+                <tr>
+                    <td>{{ e.row }}</td>
+                    <td><code>{{ e.column }}</code></td>
+                    <td><code>{{ e.value if e.value else '(blank)' }}</code></td>
+                    <td>{{ e.message }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{# ── Upload form ── #}
 <form method="POST" action="/upload" enctype="multipart/form-data" class="upload-form">
     <div class="form-group">
         <label for="file">Attendance File (Excel or CSV)</label>
@@ -19,11 +87,15 @@
     <div class="form-row">
         <div class="form-group">
             <label for="program">Program</label>
-            <input type="text" id="program" name="program" placeholder="e.g. After School Literacy" required>
+            <input type="text" id="program" name="program"
+                   placeholder="e.g. After School Literacy"
+                   value="{{ form.program if form else '' }}" required>
         </div>
         <div class="form-group">
             <label for="school">School</label>
-            <input type="text" id="school" name="school" placeholder="e.g. West Philadelphia High" required>
+            <input type="text" id="school" name="school"
+                   placeholder="e.g. West Philadelphia High"
+                   value="{{ form.school if form else '' }}" required>
         </div>
     </div>
 
@@ -32,19 +104,45 @@
             <label for="category">Category</label>
             <select id="category" name="category" required>
                 <option value="">Select a category</option>
-                <option value="literacy">Literacy</option>
-                <option value="stem">STEM</option>
-                <option value="health">Health</option>
-                <option value="arts">Arts</option>
-                <option value="other">Other</option>
+                {% set cats = [('literacy','Literacy'),('stem','STEM'),('health','Health'),('arts','Arts'),('other','Other')] %}
+                {% for val, label in cats %}
+                <option value="{{ val }}"
+                    {% if form and form.category == val %}selected{% endif %}>
+                    {{ label }}
+                </option>
+                {% endfor %}
             </select>
         </div>
         <div class="form-group">
             <label for="date_range">Date Range</label>
-            <input type="text" id="date_range" name="date_range" placeholder="e.g. Sep 2024 – Jan 2025">
+            <input type="text" id="date_range" name="date_range"
+                   placeholder="e.g. Sep 2024 – Jan 2025"
+                   value="{{ form.date_range if form else '' }}">
         </div>
     </div>
 
     <button type="submit" class="btn btn-primary">Upload and Validate</button>
 </form>
+
+<script>
+// Drag-and-drop + file-chosen label
+const zone  = document.getElementById('dropZone');
+const input = document.getElementById('file');
+const label = document.getElementById('fileChosen');
+
+input.addEventListener('change', () => {
+    label.textContent = input.files[0] ? input.files[0].name : '';
+});
+
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+zone.addEventListener('dragleave', ()  => zone.classList.remove('dragover'));
+zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    if (e.dataTransfer.files.length) {
+        input.files = e.dataTransfer.files;
+        label.textContent = input.files[0].name;
+    }
+});
+</script>
 {% endblock %}
